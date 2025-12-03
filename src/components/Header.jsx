@@ -1,31 +1,91 @@
-import React from "react";
+// src/components/Header.jsx
+import React, { useState, useEffect } from "react";
+import { LogOut, User } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
 
 export default function Header({ onAdd, onExport }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      setUserData(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+
+      // Clear local storage
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userData");
+
+      // Redirect to login
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between mb-6">
       <div>
         <h1 className="text-3xl font-bold">Transactions</h1>
-        <p className="text-gray-500">View and manage all your financial transactions</p>
+        <p className="text-gray-500">
+          View and manage all your financial transactions
+        </p>
       </div>
 
       <div className="flex items-center gap-3">
         <button
           onClick={onExport}
-          className="bg-white px-4 py-2 rounded-lg border shadow-sm"
+          className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors"
         >
           ⤓ Export CSV
         </button>
 
         <button
           onClick={onAdd}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg shadow"
+          className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors"
         >
           + Add Transaction
         </button>
 
-        <div className="ml-4 text-right">
-          <div className="font-semibold">John Doe</div>
-          <div className="text-xs text-gray-400">john@example.com</div>
+        {/* User Profile Section with Dropdown */}
+        <div className="relative ml-4">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition-colors"
+          >
+            {/* User Avatar/Icon */}
+            {userData?.photoURL ? (
+              <img
+                src={userData.photoURL}
+                alt="User"
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                <User size={20} color="white" aria-hidden />
+              </div>
+            )}
+               
+
+            {/* User Info */}
+            <div className="text-right">
+              <div className="font-semibold text-sm">
+                {userData?.displayName || "User"}
+              </div>
+              <div className="text-xs text-gray-400">
+                {userData?.email || "user@example.com"}
+              </div>
+            </div>
+          </button>
         </div>
       </div>
     </div>

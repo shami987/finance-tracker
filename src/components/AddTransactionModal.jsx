@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-export default function AddTransactionModal({ isOpen, onClose, onAdd, editItem }) {
+export default function AddTransactionModal({
+  isOpen,
+  onClose,
+  onAdd,
+  editItem,
+}) {
   // Hooks at the very top
   const [type, setType] = useState("expense");
   const [amount, setAmount] = useState("");
@@ -46,8 +51,12 @@ export default function AddTransactionModal({ isOpen, onClose, onAdd, editItem }
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-lg relative">
-
-        <button onClick={onClose} className="absolute right-4 top-3 text-gray-400 text-xl">✕</button>
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-3 text-gray-400 text-xl"
+        >
+          ✕
+        </button>
 
         <h2 className="text-2xl font-semibold mb-4">
           {editItem ? "Edit Transaction" : "Add Transaction"}
@@ -56,14 +65,18 @@ export default function AddTransactionModal({ isOpen, onClose, onAdd, editItem }
         <div className="flex mb-4 bg-gray-100 p-1 rounded-lg">
           <button
             type="button"
-            className={`flex-1 py-2 rounded-lg ${type === "expense" ? "bg-white shadow" : ""}`}
+            className={`flex-1 py-2 rounded-lg ${
+              type === "expense" ? "bg-white shadow" : ""
+            }`}
             onClick={() => setType("expense")}
           >
             Expense
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 rounded-lg ${type === "income" ? "bg-white shadow" : ""}`}
+            className={`flex-1 py-2 rounded-lg ${
+              type === "income" ? "bg-white shadow" : ""
+            }`}
             onClick={() => setType("income")}
           >
             Income
@@ -121,7 +134,10 @@ export default function AddTransactionModal({ isOpen, onClose, onAdd, editItem }
             />
           </div>
 
-          <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold">
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold"
+          >
             {editItem ? "Save Changes" : "Add Transaction"}
           </button>
         </form>

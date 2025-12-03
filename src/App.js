@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import StatsCards from "./components/StatsCards";
@@ -7,8 +8,10 @@ import TransactionsList from "./components/TransactionsList";
 import AddTransactionModal from "./components/AddTransactionModal";
 import useLocalTransactions from "./hooks/useLocalTransactions";
 import { exportTransactionsToCsv } from "./utils/exportCsv";
+import Login from "./components/Login";
 
-export default function App() {
+// Main Dashboard Component
+function Dashboard() {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } = useLocalTransactions();
 
   // UI state
@@ -85,5 +88,36 @@ export default function App() {
         />
       </main>
     </div>
+  );
+}
+
+// Protected Route Component
+function ProtectedRoute({ children }) {
+  const isAuthenticated = localStorage.getItem('authToken');
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+// Main App Component with Router
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Login Route - accessible without authentication */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Protected Dashboard Route */}
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Redirect any unknown routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
