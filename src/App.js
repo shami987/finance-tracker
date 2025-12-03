@@ -1,25 +1,89 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo, useState } from "react";
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import StatsCards from "./components/StatsCards";
+import Filters from "./components/Filters";
+import TransactionsList from "./components/TransactionsList";
+import AddTransactionModal from "./components/AddTransactionModal";
+import useLocalTransactions from "./hooks/useLocalTransactions";
+import { exportTransactionsToCsv } from "./utils/exportCsv";
 
-function App() {
+export default function App() {
+  const { transactions, addTransaction, updateTransaction, deleteTransaction } = useLocalTransactions();
+
+  // UI state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+
+  const [filters, setFilters] = useState({ search: "", type: "all", category: "all" });
+
+  // derive categories list from transactions
+  const categories = useMemo(() => {
+    const set = new Set(transactions.map(t => t.category).filter(Boolean));
+    return [...set];
+  }, [transactions]);
+
+  // totals
+  const totals = useMemo(() => {
+    let income = 0, expense = 0;
+    transactions.forEach(t => {
+      const amt = Number(t.amount) || 0;
+      if (t.type === "income") income += amt;
+      else expense += amt;
+    });
+    return { income, expense, net: income - expense };
+  }, [transactions]);
+
+  // filtered transactions
+  const filtered = useMemo(() => {
+    return transactions.filter(t => {
+      if (filters.search && !(`${t.description} ${t.category}`.toLowerCase().includes(filters.search.toLowerCase()))) {
+        return false;
+      }
+      if (filters.type !== "all" && t.type !== filters.type) return false;
+      if (filters.category !== "all" && t.category !== filters.category) return false;
+      return true;
+    });
+  }, [transactions, filters]);
+
+  function handleAddClick() {
+    setEditItem(null);
+    setModalOpen(true);
+  }
+
+  function handleSave(tx) {
+    if (tx.id) {
+      updateTransaction(tx.id, tx);
+    } else {
+      addTransaction(tx);
+    }
+  }
+
+  function handleEdit(item) {
+    setEditItem(item);
+    setModalOpen(true);
+  }
+
+  function clearFilters() {
+    setFilters({ search: "", type: "all", category: "all" });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 p-8">
+        <Header onAdd={handleAddClick} onExport={() => exportTransactionsToCsv(filtered)} />
+        <StatsCards totals={totals} />
+        <Filters filters={filters} setFilters={setFilters} categories={categories} clearFilters={clearFilters} />
+        <TransactionsList transactions={filtered} onEdit={handleEdit} onDelete={deleteTransaction} />
+
+        <AddTransactionModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onAdd={handleSave}
+          editItem={editItem}
+        />
+      </main>
     </div>
   );
 }
-
-export default App;
