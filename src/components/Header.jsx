@@ -74,7 +74,6 @@ export default function Header({ onAdd, onExport }) {
                 <User size={20} color="white" aria-hidden />
               </div>
             )}
-               
 
             {/* User Info */}
             <div className="text-right">
@@ -86,6 +85,18 @@ export default function Header({ onAdd, onExport }) {
               </div>
             </div>
           </button>
+          {/* Dropdown Menu */}
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-10">
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-gray-700"
+              >
+                <LogOut size={16} aria-hidden />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
