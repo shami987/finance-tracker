@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { Grid2X2, Send, Tag, BarChart3, Settings } from "lucide-react";
 
 export default function Sidebar() {
   return (
@@ -9,60 +10,70 @@ export default function Sidebar() {
         <div className="text-sm text-gray-400">Personal Tracker</div>
       </div>
 
-      <nav className="flex flex-col gap-2 text-gray-700">
+      <nav className="flex flex-col gap-4 text-gray-700">
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
-              isActive ? "bg-green-50 text-green-600" : "hover:bg-gray-100"
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              isActive
+                ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+                : "text-gray-600 hover:bg-gray-50"
             }`
           }
         >
-          <span>📊</span> Dashboard
+          <Grid2X2 size={20} /> Dashboard
         </NavLink>
 
         <NavLink
           to="/transactions"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
-              isActive ? "bg-green-50 text-green-600" : "hover:bg-gray-100"
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              isActive
+                ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+                : "text-gray-600 hover:bg-gray-50"
             }`
           }
         >
-          ✈️ Transactions
+          <Send size={20} /> Transactions
         </NavLink>
 
         <NavLink
           to="/categories"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
-              isActive ? "bg-green-50 text-green-600" : "hover:bg-gray-100"
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              isActive
+                ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+                : "text-gray-600 hover:bg-gray-50"
             }`
           }
         >
-          🏷️ Categories
+          <Tag size={20} /> Categories
         </NavLink>
 
         <NavLink
           to="/analytics"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
-              isActive ? "bg-green-50 text-green-600" : "hover:bg-gray-100"
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              isActive
+                ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+                : "text-gray-600 hover:bg-gray-50"
             }`
           }
         >
-          📈 Analytics
+          <BarChart3 size={20} /> Analytics
         </NavLink>
 
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
-              isActive ? "bg-green-50 text-green-600" : "hover:bg-gray-100"
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              isActive
+                ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+                : "text-gray-600 hover:bg-gray-50"
             }`
           }
         >
-          ⚙️ Settings
+          <Settings size={20} /> Settings
         </NavLink>
       </nav>
 

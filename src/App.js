@@ -11,6 +11,9 @@ import { exportTransactionsToCsv } from "./utils/exportCsv";
 import Login from "./components/Login";
 import MainDashboard from "./components/MainDashboard";
 import TransactionsPage from "./components/TransactionsPage";
+import CategoriesPage from "./components/CategoriesPage";
+import AnalyticsPage from "./components/AnalyticsPage";
+import SettingsPage from "./components/SettingsPage";
 
 // Main Dashboard Component
 function Dashboard() {
@@ -146,6 +149,36 @@ export default function App() {
         element={
           <ProtectedRoute>
             <TransactionsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Categories page (protected) */}
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <CategoriesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Analytics page (protected) */}
+      <Route
+        path="/analytics"
+        element={
+          <ProtectedRoute>
+            <AnalyticsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Settings page (protected) */}
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         }
       />

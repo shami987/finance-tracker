@@ -1,16 +1,15 @@
 import React, { useMemo, useState } from "react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
 import Filters from "./Filters";
 import StatsCards from "./StatsCards";
 import TransactionsList from "./TransactionsList";
 import AddTransactionModal from "./AddTransactionModal";
-import useLocalTransactions from "../hooks/useLocalTransactions";
+import useFirebaseTransactions from "../hooks/useFirebaseTransactions";
 import { exportTransactionsToCsv } from "../utils/exportCsv";
+import Layout from "./Layout";
 
 export default function TransactionsPage() {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } =
-    useLocalTransactions();
+    useFirebaseTransactions();
 
   // UI state
   const [modalOpen, setModalOpen] = useState(false);
@@ -81,33 +80,51 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-8">
-        <Header
-          onAdd={handleAddClick}
-          onExport={() => exportTransactionsToCsv(filtered)}
-        />
-        <StatsCards totals={totals} />
-        <Filters
-          filters={filters}
-          setFilters={setFilters}
-          categories={categories}
-          clearFilters={clearFilters}
-        />
-        <TransactionsList
-          transactions={filtered}
-          onEdit={handleEdit}
-          onDelete={deleteTransaction}
-        />
+    <Layout pageTitle="Transactions">
+      {/* Transactions Header with description and buttons */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <p className="text-gray-500">
+            View and manage all your financial transactions
+          </p>
+        </div>
 
-        <AddTransactionModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onAdd={handleSave}
-          editItem={editItem}
-        />
-      </main>
-    </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => exportTransactionsToCsv(filtered)}
+            className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            ⤓ Export CSV
+          </button>
+
+          <button
+            onClick={handleAddClick}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors"
+          >
+            + Add Transaction
+          </button>
+        </div>
+      </div>
+
+      <StatsCards totals={totals} />
+      <Filters
+        filters={filters}
+        setFilters={setFilters}
+        categories={categories}
+        clearFilters={clearFilters}
+      />
+      <TransactionsList
+        transactions={filtered}
+        onEdit={handleEdit}
+        onDelete={deleteTransaction}
+      />
+
+      <AddTransactionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onAdd={handleSave}
+        editItem={editItem}
+      />
+    </Layout>
   );
 }
