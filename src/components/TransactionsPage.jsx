@@ -1,19 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import StatsCards from "./components/StatsCards";
-import Filters from "./components/Filters";
-import TransactionsList from "./components/TransactionsList";
-import AddTransactionModal from "./components/AddTransactionModal";
-import useLocalTransactions from "./hooks/useLocalTransactions";
-import { exportTransactionsToCsv } from "./utils/exportCsv";
-import Login from "./components/Login";
-import MainDashboard from "./components/MainDashboard";
-import TransactionsPage from "./components/TransactionsPage";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import Filters from "./Filters";
+import StatsCards from "./StatsCards";
+import TransactionsList from "./TransactionsList";
+import AddTransactionModal from "./AddTransactionModal";
+import useLocalTransactions from "../hooks/useLocalTransactions";
+import { exportTransactionsToCsv } from "../utils/exportCsv";
 
-// Main Dashboard Component
-function Dashboard() {
+export default function TransactionsPage() {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } =
     useLocalTransactions();
 
@@ -114,44 +109,5 @@ function Dashboard() {
         />
       </main>
     </div>
-  );
-}
-
-// Protected Route Component
-function ProtectedRoute({ children }) {
-  const isAuthenticated = localStorage.getItem("authToken");
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
-}
-
-// Main App Component with Router
-export default function App() {
-  return (
-    <Routes>
-      {/* Login Route - accessible without authentication */}
-      <Route path="/login" element={<Login />} />
-
-      {/* Protected Dashboard Route */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <MainDashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Transactions page (protected) */}
-      <Route
-        path="/transactions"
-        element={
-          <ProtectedRoute>
-            <TransactionsPage />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Redirect any unknown routes to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
   );
 }

@@ -62,20 +62,7 @@ export default function Header({ onAdd, onExport }) {
             onClick={() => setShowDropdown(!showDropdown)}
             className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition-colors"
           >
-            {/* User Avatar/Icon */}
-            {userData?.photoURL ? (
-              <img
-                src={userData.photoURL}
-                alt="User"
-                className="w-10 h-10 rounded-full"
-              />
-            ) : (
-              <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                <User size={20} color="white" aria-hidden />
-              </div>
-            )}
-
-            {/* User Info */}
+                      {/* User Info */}
             <div className="text-right">
               <div className="font-semibold text-sm">
                 {userData?.displayName || "User"}
@@ -84,6 +71,20 @@ export default function Header({ onAdd, onExport }) {
                 {userData?.email || "user@example.com"}
               </div>
             </div>
+            {/* User Avatar/Icon */}
+            {userData?.photoURL ? (
+              <img
+                src={userData.photoURL}
+                alt="User"
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                <User size={15} color="white" aria-hidden />
+              </div>
+            )}
+
+
           </button>
           {/* Dropdown Menu */}
           {showDropdown && (
