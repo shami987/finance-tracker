@@ -33,36 +33,17 @@ export default function Header({ onAdd, onExport }) {
   };
 
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div>
-        <h1 className="text-3xl font-bold">Transactions</h1>
-        <p className="text-gray-500">
-          View and manage all your financial transactions
-        </p>
-      </div>
+    <>
+      {/* Top Bar - Transactions Title + User Profile */}
+      <div className="flex items-center justify-between mb-6 pb-6 border-b">
+        <h1 className="text-2xl font-bold">Transactions</h1>
 
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onExport}
-          className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors"
-        >
-          ⤓ Export CSV
-        </button>
-
-        <button
-          onClick={onAdd}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors"
-        >
-          + Add Transaction
-        </button>
-
-        {/* User Profile Section with Dropdown */}
-        <div className="relative ml-4">
+        <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
             className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition-colors"
           >
-                      {/* User Info */}
+            {/* User Info */}
             <div className="text-right">
               <div className="font-semibold text-sm">
                 {userData?.displayName || "User"}
@@ -83,9 +64,8 @@ export default function Header({ onAdd, onExport }) {
                 <User size={15} color="white" aria-hidden />
               </div>
             )}
-
-
           </button>
+
           {/* Dropdown Menu */}
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-10">
@@ -100,6 +80,32 @@ export default function Header({ onAdd, onExport }) {
           )}
         </div>
       </div>
-    </div>
+
+      {/* Main Content Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Transactions</h1>
+          <p className="text-gray-500">
+            View and manage all your financial transactions
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onExport}
+            className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            ⤓ Export CSV
+          </button>
+
+          <button
+            onClick={onAdd}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors"
+          >
+            + Add Transaction
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
