@@ -7,16 +7,15 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+        `flex items-center gap-3 px-4 py-3 rounded-full font-medium transition-all text-sm ${
           isActive
-            ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
-            : "text-gray-600 hover:bg-gray-50"
+            ? "bg-green-500 text-white shadow hover:bg-green-600"
+            : "text-gray-700 hover:bg-gray-50"
         }`
       }
     >
-      <Icon size={20} />
-      <span className="hidden md:inline">{children}</span>
-      <span className="md:hidden">{children}</span>
+      <Icon size={20} className="text-current" />
+      <span className="ml-2">{children}</span>
     </NavLink>
   );
 
@@ -71,8 +70,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-72 bg-white border-r px-6 pt-0 pb-6 flex-col">
-        <div className="mb-8 pt-6">
+      <aside className="hidden md:flex w-72 h-screen bg-white border-r px-6 pt-6 pb-6 flex-col">
+        <div className="mb-8">
           <div className="text-2xl font-bold text-green-600">Finance</div>
           <div className="text-sm text-gray-400">Personal Tracker</div>
         </div>
@@ -96,9 +95,9 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         </nav>
 
         <div className="mt-auto">
-          <button className="w-full text-left px-4 py-3 rounded-lg border">
+          {/* <button className="w-full text-left px-4 py-3 rounded-lg border">
             Sign Out
-          </button>
+          </button> */}
         </div>
       </aside>
     </>

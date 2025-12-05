@@ -67,7 +67,7 @@ export default function Layout({ children, pageTitle }) {
               </div>
             </div>
 
-            {/* center: page title (per-page) - hidden on small screens */}
+            {/* center: page title (per-page) */}
             <div className="hidden md:flex items-center justify-start">
               {pageTitle ? (
                 <div className="text-lg font-semibold text-gray-900">
@@ -132,7 +132,7 @@ export default function Layout({ children, pageTitle }) {
       </header>
 
       {/* Main layout */}
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row items-start">
         <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
         <main className="flex-1 p-4 md:p-8">{children}</main>
