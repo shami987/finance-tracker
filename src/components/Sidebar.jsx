@@ -95,9 +95,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         </nav>
 
         <div className="mt-auto">
-          {/* <button className="w-full text-left px-4 py-3 rounded-lg border">
-            Sign Out
-          </button> */}
+
         </div>
       </aside>
     </>
