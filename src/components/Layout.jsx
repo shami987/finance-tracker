@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, LogIn } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import Sidebar from "./Sidebar";
+import AddTransactionModal from "./AddTransactionModal";
+import { Link } from "react-router-dom";
 
 export default function Layout({ children, pageTitle }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   // Load user data
   useEffect(() => {
@@ -29,62 +33,134 @@ export default function Layout({ children, pageTitle }) {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main content */}
-      <div className="flex-1 p-8">
-        {/* Top Bar - Page Title + User Profile */}
-        <div className="flex items-center justify-between mb-6 pb-6 border-b">
-          <h1 className="text-2xl font-bold">{pageTitle}</h1>
-
-          <div className="relative">
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition-colors"
-            >
-              {/* User Info */}
-              <div className="text-right">
-                <div className="font-semibold text-sm">
-                  {userData?.displayName || "User"}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {userData?.email || "user@example.com"}
-                </div>
-              </div>
-              {/* User Avatar/Icon */}
-              {userData?.photoURL ? (
-                <img
-                  src={userData.photoURL}
-                  alt="User"
-                  className="w-10 h-10 rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
-                  <User size={15} color="white" aria-hidden />
-                </div>
-              )}
-            </button>
-
-            {/* Dropdown Menu */}
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-10">
-                <button
-                  onClick={handleLogout}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-gray-700"
+    <div className="min-h-screen bg-gray-50">
+      {/* Global Top Navbar */}
+      <header className="w-full bg-white border-b">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center h-16 justify-between md:grid md:grid-cols-3 md:items-center">
+            {/* left: menu button (mobile) */}
+            <div className="flex items-center">
+              <button
+                onClick={() => setMobileOpen(true)}
+                className="p-2 rounded-md text-gray-700 md:hidden"
+                aria-label="Open menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <LogOut size={16} aria-hidden />
-                  Logout
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+
+              {/* Mobile-only app title next to menu button */}
+              <div className="ml-3 text-base font-semibold text-green-600 md:hidden whitespace-nowrap">
+                Finance Tracker
               </div>
-            )}
+            </div>
+
+            {/* center: page title (per-page) - hidden on small screens */}
+            <div className="hidden md:flex items-center justify-start">
+              {pageTitle ? (
+                <div className="text-lg font-semibold text-gray-900">
+                  {pageTitle}
+                </div>
+              ) : null}
+            </div>
+
+            {/* right: user/login */}
+            <div className="flex items-center justify-end gap-4">
+              {userData ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowDropdown((s) => !s)}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50"
+                  >
+                    {/* name/email only visible on md+ */}
+                    <div className="hidden md:block text-right">
+                      <div className="text-sm font-medium text-gray-900">
+                        {userData.displayName || "User"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {userData.email || ""}
+                      </div>
+                    </div>
+                    {userData.photoURL ? (
+                      <img
+                        src={userData.photoURL}
+                        alt="user"
+                        className="w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                        <User size={16} className="text-gray-600" />
+                      </div>
+                    )}
+                  </button>
+                  {showDropdown && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-10">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-gray-700"
+                      >
+                        <LogOut size={16} aria-hidden />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50"
+                >
+                  <LogIn />
+                  <span className="hidden md:inline text-sm">Login</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Page Content */}
-        {children}
+      {/* Main layout */}
+      <div className="flex flex-col md:flex-row">
+        <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+
+        <main className="flex-1 p-4 md:p-8">{children}</main>
       </div>
+
+      {/* Mobile floating Add button */}
+      <div className="fixed bottom-6 right-4 md:hidden z-50">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-full shadow-lg"
+          aria-label="Add transaction"
+        >
+          <span className="text-xl font-bold">+</span>
+          <span className="hidden sm:inline">Add Transaction</span>
+        </button>
+      </div>
+
+      <AddTransactionModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAdd={(tx) => {
+          // Dispatch a window event so other parts of the app can listen and handle persistence
+          window.dispatchEvent(
+            new CustomEvent("add-transaction", { detail: tx })
+          );
+          console.log("New transaction:", tx);
+        }}
+      />
     </div>
   );
 }

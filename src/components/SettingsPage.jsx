@@ -87,7 +87,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="text-sm font-semibold text-gray-900">
                 {userData.displayName}
@@ -96,7 +96,7 @@ export default function SettingsPage() {
             <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
               <User size={18} className="text-gray-600" />
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Tab panels */}

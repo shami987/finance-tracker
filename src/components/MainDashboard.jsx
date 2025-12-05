@@ -101,20 +101,21 @@ const MainDashboard = () => {
   };
 
   return (
-    <Layout pageTitle="Dashboard">
+     <Layout pageTitle="Dashboard">
+    <div className="space-y-6">
+
       <StatsCards totals={totals} />
 
       {/* Balance Trend Chart */}
-      <div className="bg-white rounded-lg p-6 shadow-sm mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Balance Trend</h2>
-        <div className="h-96">
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
+          Balance Trend
+        </h2>
+
+        <div className="h-56 sm:h-72 md:h-80 lg:h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={balanceData}>
-              <XAxis
-                dataKey="date"
-                stroke="#9ca3af"
-                style={{ fontSize: "12px" }}
-              />
+              <XAxis dataKey="date" stroke="#9ca3af" style={{ fontSize: "12px" }} />
               <YAxis
                 stroke="#9ca3af"
                 style={{ fontSize: "12px" }}
@@ -136,29 +137,31 @@ const MainDashboard = () => {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white rounded-lg p-6 shadow-none hover:shadow-md transition-shadow duration-150">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">
+      <div className="bg-white rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800">
             Recent Transactions
           </h2>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => handleOpenModal(null)}
-              className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <span className="text-xl">+</span>
-              <span>Add Transaction</span>
-            </button>
-          </div>
+
+          <button
+            onClick={() => handleOpenModal(null)}
+            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 w-full sm:w-auto"
+          >
+            <span className="text-xl">+</span>
+            <span>Add Transaction</span>
+          </button>
         </div>
 
-        <TransactionsList
-          transactions={transactions.slice(0, 4)}
-          onEdit={(item) => handleOpenModal(item)}
-          onDelete={(id) => deleteTransaction(id)}
-          onClick={(item) => navigate("/transactions")}
-        />
+        <div className="mt-4 overflow-x-auto">
+          <TransactionsList
+            transactions={transactions.slice(0, 4)}
+            onEdit={(item) => handleOpenModal(item)}
+            onDelete={(id) => deleteTransaction(id)}
+            onClick={() => navigate("/transactions")}
+          />
+        </div>
       </div>
+
       {/* Add Transaction Modal */}
       <AddTransactionModal
         isOpen={modalOpen}
@@ -166,7 +169,8 @@ const MainDashboard = () => {
         onAdd={handleSaveTransaction}
         editItem={editItem}
       />
-    </Layout>
+    </div>
+  </Layout>
   );
 };
 

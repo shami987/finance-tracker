@@ -8,10 +8,13 @@ import { exportTransactionsToCsv } from "../utils/exportCsv";
 import Layout from "./Layout";
 
 export default function TransactionsPage() {
-  const { transactions, addTransaction, updateTransaction, deleteTransaction } =
-    useFirebaseTransactions();
+  const {
+    transactions = [],
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  } = useFirebaseTransactions();
 
-  // UI state
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
@@ -21,34 +24,19 @@ export default function TransactionsPage() {
     category: "all",
   });
 
-  // derive categories list from transactions
   const categories = useMemo(() => {
-    const set = new Set(transactions.map((t) => t.category).filter(Boolean));
-    return [...set];
+    const setCats = new Set();
+    transactions.forEach((t) => t.category && setCats.add(t.category));
+    return Array.from(setCats);
   }, [transactions]);
 
-  // totals
-  const totals = useMemo(() => {
-    let income = 0,
-      expense = 0;
-    transactions.forEach((t) => {
-      const amt = Number(t.amount) || 0;
-      if (t.type === "income") income += amt;
-      else expense += amt;
-    });
-    return { income, expense, net: income - expense };
-  }, [transactions]);
-
-  // filtered transactions
   const filtered = useMemo(() => {
     return transactions.filter((t) => {
-      if (
-        filters.search &&
-        !`${t.description} ${t.category}`
-          .toLowerCase()
-          .includes(filters.search.toLowerCase())
-      ) {
-        return false;
+      if (filters.search) {
+        const s = filters.search.toLowerCase();
+        const desc = (t.description || "").toLowerCase();
+        const cat = (t.category || "").toLowerCase();
+        if (!desc.includes(s) && !cat.includes(s)) return false;
       }
       if (filters.type !== "all" && t.type !== filters.type) return false;
       if (filters.category !== "all" && t.category !== filters.category)
@@ -56,6 +44,16 @@ export default function TransactionsPage() {
       return true;
     });
   }, [transactions, filters]);
+
+  const totals = useMemo(() => {
+    const totals = { income: 0, expense: 0, net: 0 };
+    filtered.forEach((t) => {
+      if (t.type === "income") totals.income += Number(t.amount || 0);
+      else totals.expense += Number(t.amount || 0);
+    });
+    totals.net = totals.income - totals.expense;
+    return totals;
+  }, [filtered]);
 
   function handleAddClick() {
     setEditItem(null);
@@ -68,6 +66,7 @@ export default function TransactionsPage() {
     } else {
       addTransaction(tx);
     }
+    setModalOpen(false);
   }
 
   function handleEdit(item) {
@@ -81,25 +80,25 @@ export default function TransactionsPage() {
 
   return (
     <Layout pageTitle="Transactions">
-      {/* Transactions Header with description and buttons */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
+          <h2 className="text-2xl font-bold">Transactions</h2>
           <p className="text-gray-500">
             View and manage all your financial transactions
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           <button
             onClick={() => exportTransactionsToCsv(filtered)}
-            className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors"
+            className="bg-white px-4 py-2 rounded-lg border shadow-sm hover:bg-gray-50 transition-colors w-full sm:w-auto text-left"
           >
             ⤓ Export CSV
           </button>
 
           <button
             onClick={handleAddClick}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors w-full sm:w-auto text-center"
           >
             + Add Transaction
           </button>
@@ -107,17 +106,21 @@ export default function TransactionsPage() {
       </div>
 
       <StatsCards totals={totals} />
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        categories={categories}
-        clearFilters={clearFilters}
-      />
-      <TransactionsList
-        transactions={filtered}
-        onEdit={handleEdit}
-        onDelete={deleteTransaction}
-      />
+
+      <div className="space-y-4">
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          categories={categories}
+          clearFilters={clearFilters}
+        />
+
+        <TransactionsList
+          transactions={filtered}
+          onEdit={handleEdit}
+          onDelete={deleteTransaction}
+        />
+      </div>
 
       <AddTransactionModal
         isOpen={modalOpen}

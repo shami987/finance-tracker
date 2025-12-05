@@ -11,11 +11,15 @@ function Card({ title, value, color = "green" }) {
 }
 
 export default function StatsCards({ totals }) {
-     if (!totals) return null; // or a loading spinner
+  if (!totals) return null; // or a loading spinner
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="bg-white p-5 rounded-xl shadow flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
       <Card title="Total Income" value={`$${totals.income.toFixed(2)}`} />
-      <Card title="Total Expense" value={`$${totals.expense.toFixed(2)}`} color="red" />
+      <Card
+        title="Total Expense"
+        value={`$${totals.expense.toFixed(2)}`}
+        color="red"
+      />
       <Card title="Net Balance" value={`$${totals.net.toFixed(2)}`} />
     </div>
   );
