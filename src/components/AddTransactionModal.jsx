@@ -6,14 +6,15 @@ export default function AddTransactionModal({
   onAdd,
   editItem,
 }) {
-  // Hooks at the very top
   const [type, setType] = useState("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Salary");
+  const [categoryOpen, setCategoryOpen] = useState(false); // NEW for dropdown toggle
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
 
-  // Reset form when modal opens or editItem changes
+  const categories = ["Salary", "Food", "Transport", "Entertainment", "Shopping"];
+
   useEffect(() => {
     if (editItem) {
       setType(editItem.type || "expense");
@@ -30,7 +31,7 @@ export default function AddTransactionModal({
     }
   }, [editItem, isOpen]);
 
-  if (!isOpen) return null; // now safe
+  if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ export default function AddTransactionModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
       <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-lg relative">
         <button
           onClick={onClose}
@@ -62,6 +63,7 @@ export default function AddTransactionModal({
           {editItem ? "Edit Transaction" : "Add Transaction"}
         </h2>
 
+        {/* Expense / Income Toggle */}
         <div className="flex mb-4 bg-gray-100 p-1 rounded-lg">
           <button
             type="button"
@@ -83,7 +85,9 @@ export default function AddTransactionModal({
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Amount */}
           <div>
             <label className="font-semibold">Amount *</label>
             <input
@@ -95,22 +99,50 @@ export default function AddTransactionModal({
             />
           </div>
 
+          {/* Custom Category Dropdown */}
           <div>
             <label className="font-semibold">Category *</label>
-            <select
-              className="w-full border rounded-lg p-3"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            >
-              <option>Salary</option>
-              <option>Food</option>
-              <option>Transport</option>
-              <option>Entertainment</option>
-              <option>Shopping</option>
-            </select>
+            <div className="mt-2 relative">
+              <button
+                type="button"
+                onClick={() => setCategoryOpen(!categoryOpen)}
+                className="w-full px-3 py-2 sm:py-3 border rounded-lg flex items-center justify-between text-sm sm:text-base"
+              >
+                <span>{category}</span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform ${
+                    categoryOpen ? "rotate-180" : ""
+                  }`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {categoryOpen && (
+                <div className="absolute left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg z-20">
+                  {categories.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        setCategory(option);
+                        setCategoryOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 sm:py-3 hover:bg-gray-50 text-sm sm:text-base"
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
+          {/* Date */}
           <div>
             <label className="font-semibold">Date *</label>
             <input
@@ -122,6 +154,7 @@ export default function AddTransactionModal({
             />
           </div>
 
+          {/* Description */}
           <div>
             <label className="font-semibold">Description *</label>
             <input
@@ -134,6 +167,7 @@ export default function AddTransactionModal({
             />
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold"

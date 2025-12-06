@@ -2,40 +2,35 @@ import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import AddCategoryModal from "./AddCategoryModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import useFirebaseCategories from "../hooks/useFirebaseCategories";
 
-const STORAGE_KEY = "categories_v1";
+
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
+    const {
+    categories,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    loading,
+  } = useFirebaseCategories();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
 
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (Array.isArray(saved)) setCategories(saved);
-    } catch (err) {
-      setCategories([]);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-  }, [categories]);
 
   const income = categories.filter((c) => c.type === "Income");
   const expense = categories.filter((c) => c.type === "Expense");
 
-  const handleAdd = (cat) => {
-    // replace if editing
-    setCategories((prev) => {
-      const exists = prev.find((p) => p.id === cat.id);
-      if (exists) return prev.map((p) => (p.id === cat.id ? cat : p));
-      return [cat, ...prev];
-    });
-  };
+const handleAdd = (cat) => {
+  if (cat.id) {
+    updateCategory(cat.id, cat);
+  } else {
+    addCategory(cat);
+  }
+};
 
   const openNew = () => {
     setEditItem(null);
@@ -49,7 +44,8 @@ export default function CategoriesPage() {
 
   const handleDelete = (id) => {
     if (!window.confirm("Delete this category?")) return;
-    setCategories((prev) => prev.filter((p) => p.id !== id));
+    deleteCategory(id);
+
   };
 
   const handleDeleteClick = (cat) => {
@@ -57,13 +53,16 @@ export default function CategoriesPage() {
     setDeleteOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    if (deleteItem) {
-      setCategories((prev) => prev.filter((p) => p.id !== deleteItem.id));
-      setDeleteOpen(false);
-      setDeleteItem(null);
-    }
-  };
+ const handleDeleteConfirm = () => {
+  if (!deleteItem) return;
+
+  // Delete from Firebase
+  deleteCategory(deleteItem.id);
+
+  // Close the modal and clear the selected item
+  setDeleteOpen(false);
+  setDeleteItem(null);
+};
 
   return (
     <Layout pageTitle="Categories">
