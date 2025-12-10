@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
+// Modal component for adding or editing a category
 export default function AddCategoryModal({ isOpen, onClose, onAdd, editItem }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("Expense");
@@ -46,6 +48,7 @@ export default function AddCategoryModal({ isOpen, onClose, onAdd, editItem }) {
     }
 
     onAdd && onAdd(data);
+    toast.success(editItem ? "Category updated successfully!" : "Transaction added successfully!");
     onClose && onClose();
   };
 

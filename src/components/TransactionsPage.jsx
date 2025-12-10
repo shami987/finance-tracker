@@ -6,6 +6,9 @@ import AddTransactionModal from "./AddTransactionModal";
 import useFirebaseTransactions from "../hooks/useFirebaseTransactions";
 import { exportTransactionsToCsv } from "../utils/exportCsv";
 import Layout from "./Layout";
+import { toast } from "react-toastify";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+
 
 export default function TransactionsPage() {
   const {
@@ -17,6 +20,11 @@ export default function TransactionsPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteItemName, setDeleteItemName] = useState("");
+
 
   const [filters, setFilters] = useState({
     search: "",
@@ -77,6 +85,24 @@ export default function TransactionsPage() {
   function clearFilters() {
     setFilters({ search: "", type: "all", category: "all" });
   }
+//handler to open the modal
+  function handleDelete(id, description) {
+  setDeleteId(id);
+  setDeleteItemName(description);
+  setDeleteModalOpen(true);
+}
+
+function confirmDelete() {
+  if (deleteId) {
+    deleteTransaction(deleteId);
+    toast.info(`Transaction "${deleteItemName}" deleted successfully!`);
+  }
+  setDeleteModalOpen(false);
+  setDeleteId(null);
+  setDeleteItemName("");
+}
+
+
 
   return (
     <Layout pageTitle="Transactions">
@@ -118,7 +144,7 @@ export default function TransactionsPage() {
         <TransactionsList
           transactions={filtered}
           onEdit={handleEdit}
-          onDelete={deleteTransaction}
+          onDelete={handleDelete}
         />
       </div>
 
@@ -128,6 +154,13 @@ export default function TransactionsPage() {
         onAdd={handleSave}
         editItem={editItem}
       />
+      <ConfirmDeleteModal
+  isOpen={deleteModalOpen}
+  onClose={() => setDeleteModalOpen(false)}
+  onConfirm={confirmDelete}
+  itemName={deleteItemName}
+/>
+
     </Layout>
   );
 }

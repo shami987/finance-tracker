@@ -60,17 +60,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               </NavItem>
             </nav>
 
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <button className="w-full text-left px-4 py-3 rounded-lg border">
                 Sign Out
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-72 h-screen bg-white border-r px-6 pt-6 pb-6 flex-col">
+      <aside className="hidden md:flex fixed top-0 left-0 h-screen w-72 bg-white border-r px-6 pt-6 pb-6 flex-col z-40">
         <div className="mb-8">
           <div className="text-2xl font-bold text-green-600">Finance</div>
           <div className="text-sm text-gray-400">Personal Tracker</div>

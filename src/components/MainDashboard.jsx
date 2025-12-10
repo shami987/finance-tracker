@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import {
   LineChart,
   Line,
@@ -13,6 +14,9 @@ import Layout from "./Layout";
 import AddTransactionModal from "./AddTransactionModal";
 import TransactionsList from "./TransactionsList";
 import { useNavigate } from "react-router-dom";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+
+
 
 // Sample data for the balance trend
 const balanceData = [
@@ -38,6 +42,26 @@ const MainDashboard = () => {
   // UI state
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+
+
+    // ✅ Add your delete handler here
+function handleDelete(id) {
+  setDeleteId(id);
+  setDeleteModalOpen(true);
+}
+
+function confirmDelete() {
+  if (deleteId) {
+    deleteTransaction(deleteId);
+    toast.info("Transaction deleted successfully!");
+  }
+  setDeleteModalOpen(false);
+  setDeleteId(null);
+}
 
   // Modal handlers
   const handleOpenModal = (item = null) => {
@@ -156,7 +180,8 @@ const MainDashboard = () => {
           <TransactionsList
             transactions={transactions.slice(0, 4)}
             onEdit={(item) => handleOpenModal(item)}
-            onDelete={(id) => deleteTransaction(id)}
+            onDelete={(id) => handleDelete(id)} 
+            
             onClick={() => navigate("/transactions")}
           />
         </div>
@@ -169,6 +194,12 @@ const MainDashboard = () => {
         onAdd={handleSaveTransaction}
         editItem={editItem}
       />
+      {/* ✅ Delete Confirmation Modal */}
+<ConfirmDeleteModal
+  isOpen={deleteModalOpen}
+  onClose={() => setDeleteModalOpen(false)}
+  onConfirm={confirmDelete}
+/>
     </div>
   </Layout>
   );

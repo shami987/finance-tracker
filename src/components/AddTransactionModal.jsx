@@ -1,4 +1,7 @@
+// src/components/AddTransactionModal.jsx
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { createPortal } from "react-dom";   // ✅ import createPortal
 
 export default function AddTransactionModal({
   isOpen,
@@ -9,7 +12,7 @@ export default function AddTransactionModal({
   const [type, setType] = useState("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Salary");
-  const [categoryOpen, setCategoryOpen] = useState(false); // NEW for dropdown toggle
+  const [categoryOpen, setCategoryOpen] = useState(false);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
 
@@ -46,11 +49,13 @@ export default function AddTransactionModal({
     };
 
     onAdd(newTransaction);
+    toast.success(editItem ? "Transaction updated successfully!" : "Transaction added successfully!");
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+  // ✅ Use createPortal so modal renders into document.body
+  return createPortal(
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-[9999] px-4">
       <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-lg relative">
         <button
           onClick={onClose}
@@ -67,18 +72,14 @@ export default function AddTransactionModal({
         <div className="flex mb-4 bg-gray-100 p-1 rounded-lg">
           <button
             type="button"
-            className={`flex-1 py-2 rounded-lg ${
-              type === "expense" ? "bg-white shadow" : ""
-            }`}
+            className={`flex-1 py-2 rounded-lg ${type === "expense" ? "bg-white shadow" : ""}`}
             onClick={() => setType("expense")}
           >
             Expense
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 rounded-lg ${
-              type === "income" ? "bg-white shadow" : ""
-            }`}
+            className={`flex-1 py-2 rounded-lg ${type === "income" ? "bg-white shadow" : ""}`}
             onClick={() => setType("income")}
           >
             Income
@@ -99,7 +100,7 @@ export default function AddTransactionModal({
             />
           </div>
 
-          {/* Custom Category Dropdown */}
+          {/* Category Dropdown */}
           <div>
             <label className="font-semibold">Category *</label>
             <div className="mt-2 relative">
@@ -110,9 +111,7 @@ export default function AddTransactionModal({
               >
                 <span>{category}</span>
                 <svg
-                  className={`w-4 h-4 text-gray-500 transition-transform ${
-                    categoryOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 text-gray-500 transition-transform ${categoryOpen ? "rotate-180" : ""}`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -176,6 +175,7 @@ export default function AddTransactionModal({
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -34,6 +34,7 @@ export default function Header({ onAdd, onExport }) {
 
   return (
     <>
+   
       {/* Top Bar - Transactions Title + User Profile */}
       <div className="flex items-center justify-between mb-6 pb-6 border-b">
         <h1 className="text-2xl font-bold">Transactions</h1>

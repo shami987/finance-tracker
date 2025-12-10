@@ -39,7 +39,7 @@ export default function TransactionItem({ tx, onEdit, onDelete, onClick }) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onDelete && onDelete(tx.id);
+            onDelete && onDelete(tx.id, tx.description);
           }}
           className="p-2 rounded hover:bg-gray-100"
         >

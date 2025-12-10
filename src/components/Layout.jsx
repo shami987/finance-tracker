@@ -41,9 +41,9 @@ export default function Layout({ children, pageTitle }) {
         <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
         {/* Right side: header at top, content below */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col md:ml-72">
           {/* === MOVE HEADER HERE === */}
-          <header className="bg-white border-b">
+          <header className="sticky top-0 z-30 bg-white border-b shadow">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="flex items-center h-16 md:grid md:grid-cols-2 md:items-center">
                 {/* left: menu button (mobile) + page title aligned near sidebar */}
@@ -143,7 +143,7 @@ export default function Layout({ children, pageTitle }) {
       </div>
 
       {/* Mobile floating Add button */}
-      <div className="fixed bottom-6 right-4 md:hidden z-50">
+      {/* <div className="fixed bottom-6 right-4 md:hidden z-50">
         <button
           onClick={() => setShowAddModal(true)}
           className="inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-full shadow-lg"
@@ -152,7 +152,7 @@ export default function Layout({ children, pageTitle }) {
           <span className="text-xl font-bold">+</span>
           <span className="hidden sm:inline">Add Transaction</span>
         </button>
-      </div>
+      </div> */}
 
       <AddTransactionModal
         isOpen={showAddModal}

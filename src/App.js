@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import StatsCards from "./components/StatsCards";
@@ -129,7 +131,8 @@ function ProtectedRoute({ children }) {
 // Main App Component with Router
 export default function App() {
   return (
-    <Routes>
+    <>
+       <Routes>
       {/* Login Route - accessible without authentication */}
       <Route path="/login" element={<Login />} />
 
@@ -186,5 +189,9 @@ export default function App() {
       {/* Redirect any unknown routes to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+          {/* ✅ Toast container goes here */}
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
+    
   );
 }
