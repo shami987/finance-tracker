@@ -78,6 +78,21 @@ const MainDashboard = () => {
     // initial check
     checkAuth();
 
+    // Block back button from returning to login
+    const handlePopState = (e) => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        navigate("/login", { replace: true });
+      } else {
+        // User is authenticated, prevent going back by pushing state forward
+        window.history.pushState({ page: "dashboard" }, "", window.location.href);
+      }
+    };
+
+    // Replace current history entry so back doesn't go to login
+    window.history.replaceState({ page: "dashboard" }, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+
     // also listen for storage changes (logout in another tab)
     const onStorage = (e) => {
       if (e.key === "authToken" && !e.newValue) {
@@ -86,7 +101,10 @@ const MainDashboard = () => {
     };
     window.addEventListener("storage", onStorage);
 
-    return () => window.removeEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [navigate]);
 
   const handleCloseModal = () => {
