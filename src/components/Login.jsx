@@ -1,47 +1,57 @@
 // src/components/Login.jsx
-import React, { useState } from 'react';
-import { Mail, Lock, TrendingUp, AlertCircle } from 'lucide-react';
-import { 
-  signInWithEmailAndPassword, 
+import React, { useState } from "react";
+import { Mail, Lock, TrendingUp, AlertCircle } from "lucide-react";
+import {
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider 
-} from 'firebase/auth';
-import { auth } from '../firebase/config';
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "../firebase/config";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Handle Email/Password Sign In
   const handleEmailSignIn = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       // Store user info in localStorage
-      localStorage.setItem('authToken', user.accessToken);
-      localStorage.setItem('userData', JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || 'User'
-      }));
+      localStorage.setItem("authToken", user.accessToken);
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "User",
+        })
+      );
+
+      // Replace the login page from browser history so back button doesn't return to it
+      window.history.replaceState({ path: "/" }, "", "/");
 
       // Redirect to dashboard
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error("Sign in error:", error);
       setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
@@ -51,34 +61,44 @@ const Login = () => {
   // Handle Email/Password Sign Up
   const handleEmailSignUp = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       // Store user info in localStorage
-      localStorage.setItem('authToken', user.accessToken);
-      localStorage.setItem('userData', JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || 'User'
-      }));
+      localStorage.setItem("authToken", user.accessToken);
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "User",
+        })
+      );
+
+      // Replace the login page from browser history so back button doesn't return to it
+      window.history.replaceState({ path: "/" }, "", "/");
 
       // Redirect to dashboard
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error("Sign up error:", error);
       setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
@@ -88,26 +108,32 @@ const Login = () => {
   // Handle Google Sign In
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      
+
       // Store user info in localStorage
-      localStorage.setItem('authToken', user.accessToken);
-      localStorage.setItem('userData', JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || 'User',
-        photoURL: user.photoURL
-      }));
+      localStorage.setItem("authToken", user.accessToken);
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "User",
+          photoURL: user.photoURL,
+        })
+      );
+
+      // Replace the login page from browser history so back button doesn't return to it
+      window.history.replaceState({ path: "/" }, "", "/");
 
       // Redirect to dashboard
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Google sign in error:', error);
+      console.error("Google sign in error:", error);
       setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
@@ -125,22 +151,22 @@ const Login = () => {
   // Convert Firebase error codes to user-friendly messages
   const getErrorMessage = (errorCode) => {
     switch (errorCode) {
-      case 'auth/invalid-email':
-        return 'Invalid email address';
-      case 'auth/user-disabled':
-        return 'This account has been disabled';
-      case 'auth/user-not-found':
-        return 'No account found with this email';
-      case 'auth/wrong-password':
-        return 'Incorrect password';
-      case 'auth/email-already-in-use':
-        return 'Email already in use';
-      case 'auth/weak-password':
-        return 'Password should be at least 6 characters';
-      case 'auth/popup-closed-by-user':
-        return 'Sign in cancelled';
+      case "auth/invalid-email":
+        return "Invalid email address";
+      case "auth/user-disabled":
+        return "This account has been disabled";
+      case "auth/user-not-found":
+        return "No account found with this email";
+      case "auth/wrong-password":
+        return "Incorrect password";
+      case "auth/email-already-in-use":
+        return "Email already in use";
+      case "auth/weak-password":
+        return "Password should be at least 6 characters";
+      case "auth/popup-closed-by-user":
+        return "Sign in cancelled";
       default:
-        return 'An error occurred. Please try again.';
+        return "An error occurred. Please try again.";
     }
   };
 
@@ -158,7 +184,8 @@ const Login = () => {
           </h1>
 
           <p className="text-xl text-gray-600 mb-10 leading-relaxed">
-            Track expenses, visualize spending patterns, and take control of your finances with our intuitive personal finance tracker.
+            Track expenses, visualize spending patterns, and take control of
+            your finances with our intuitive personal finance tracker.
           </p>
 
           <ul className="space-y-4">
@@ -192,12 +219,12 @@ const Login = () => {
             <button
               onClick={() => {
                 setIsSignIn(true);
-                setError('');
+                setError("");
               }}
               className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
                 isSignIn
-                  ? 'bg-white shadow-md text-gray-900'
-                  : 'bg-transparent text-gray-500 hover:text-gray-700'
+                  ? "bg-white shadow-md text-gray-900"
+                  : "bg-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               Sign In
@@ -205,12 +232,12 @@ const Login = () => {
             <button
               onClick={() => {
                 setIsSignIn(false);
-                setError('');
+                setError("");
               }}
               className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
                 !isSignIn
-                  ? 'bg-white shadow-md text-gray-900'
-                  : 'bg-transparent text-gray-500 hover:text-gray-700'
+                  ? "bg-white shadow-md text-gray-900"
+                  : "bg-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               Create Account
@@ -261,7 +288,7 @@ const Login = () => {
                   placeholder="••••••••"
                   className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                   disabled={loading}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
                 />
               </div>
             </div>
@@ -271,7 +298,7 @@ const Login = () => {
               disabled={loading}
               className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Loading...' : (isSignIn ? 'Sign In' : 'Create Account')}
+              {loading ? "Loading..." : isSignIn ? "Sign In" : "Create Account"}
             </button>
 
             <div className="relative">
@@ -279,7 +306,9 @@ const Login = () => {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">Or continue with</span>
+                <span className="px-4 bg-white text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 
@@ -312,7 +341,7 @@ const Login = () => {
 
           {isSignIn && (
             <p className="mt-6 text-center text-sm text-gray-600">
-              Forgot your password?{' '}
+              Forgot your password?{" "}
               <button className="text-emerald-600 hover:text-emerald-700 font-medium">
                 Reset it
               </button>
